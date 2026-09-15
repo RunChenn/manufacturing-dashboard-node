@@ -1,4 +1,64 @@
-import swaggerUi from 'swagger-ui-express'
+const swaggerUiVersion = '5.32.15'
+
+function getApiBaseUrl(req) {
+  const protocol = req.get('x-forwarded-proto') || req.protocol
+  return `${protocol}://${req.get('host')}/api`
+}
+
+function getOpenApiSpec(req) {
+  return {
+    ...openApiSpec,
+    servers: [
+      {
+        url: getApiBaseUrl(req),
+        description: 'Current API server',
+      },
+      ...openApiSpec.servers,
+    ],
+  }
+}
+
+function getSwaggerHtml() {
+  const swaggerUiBaseUrl = `https://cdn.jsdelivr.net/npm/swagger-ui-dist@${swaggerUiVersion}`
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manufacturing Dashboard API Docs</title>
+  <link rel="stylesheet" href="${swaggerUiBaseUrl}/swagger-ui.css">
+  <style>
+    body {
+      margin: 0;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="${swaggerUiBaseUrl}/swagger-ui-bundle.js"></script>
+  <script src="${swaggerUiBaseUrl}/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      window.ui = SwaggerUIBundle({
+        url: '/api/openapi.json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: 'StandaloneLayout'
+      })
+    }
+  </script>
+</body>
+</html>`
+}
 
 export const openApiSpec = {
   openapi: '3.0.0',
@@ -662,8 +722,10 @@ export const openApiSpec = {
 
 export function setupSwagger(app) {
   app.get('/api/openapi.json', (req, res) => {
-    res.json(openApiSpec)
+    res.json(getOpenApiSpec(req))
   })
 
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec))
+  app.get(['/api/docs', '/api/docs/'], (req, res) => {
+    res.type('html').send(getSwaggerHtml())
+  })
 }
