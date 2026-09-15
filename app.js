@@ -12,8 +12,20 @@ import { errorMiddleware } from './middlewares/error.middleware.js'
 
 export const app = express()
 
+const allowedOrigins = process.env.CLIENT_ORIGIN
+  ?.split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN,
+  origin(origin, callback) {
+    if (!origin || !allowedOrigins?.length || allowedOrigins.includes(origin)) {
+      callback(null, true)
+      return
+    }
+
+    callback(null, false)
+  },
   credentials: true,
 }))
 app.use(express.json())

@@ -154,6 +154,27 @@ Seed 會建立三個使用者，密碼皆為 `demo1234`：
 http://localhost:3000/api-docs
 ```
 
+## Vercel 部署
+
+Vercel 會透過 `api/index.js` 載入 Express app，並由 `vercel.json` 將 `/api/*` 請求轉進同一個 serverless function。
+
+在 Vercel Project Settings > Environment Variables 設定：
+
+```env
+MONGODB_URI=mongodb+srv://...
+JWT_SECRET=replace-with-production-secret
+JWT_EXPIRES_IN=1d
+CLIENT_ORIGIN=https://your-frontend.vercel.app
+```
+
+如果有多個前端網址，例如 production 和 preview，可用逗號分隔：
+
+```env
+CLIENT_ORIGIN=https://your-frontend.vercel.app,https://your-preview.vercel.app
+```
+
+MongoDB Atlas 需要允許 Vercel 連線；demo 專案可在 Atlas Network Access 加入 `0.0.0.0/0`，正式環境請改用更嚴格的網路控管。
+
 ## 錯誤處理
 
 API controller 使用 Zod 驗證 request body。錯誤會交由 `error.middleware.js` 統一轉換 response；JWT 過期或缺少 token 時回傳 `401`，權限不足時回傳 `403`。

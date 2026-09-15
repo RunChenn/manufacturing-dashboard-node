@@ -15,7 +15,13 @@ export async function connectDB() {
     connectionPromise = mongoose.connect(process.env.MONGODB_URI)
   }
 
-  await connectionPromise
+  try {
+    await connectionPromise
+  } catch (error) {
+    connectionPromise = null
+    throw error
+  }
+
   console.log('MongoDB connected')
   return mongoose.connection
 }
