@@ -173,6 +173,14 @@ CLIENT_ORIGIN=https://your-frontend.vercel.app
 CLIENT_ORIGIN=https://your-frontend.vercel.app,https://your-preview.vercel.app
 ```
 
+重新部署後先檢查健康狀態：
+
+```txt
+GET https://your-backend.vercel.app/api/health
+```
+
+`env.mongodbUri`、`env.jwtSecret`、`env.clientOrigin` 都應該是 `true`。前端若出現 `AxiosError: timeout of 8000ms exceeded`，通常是後端等待 MongoDB 連線超過前端 timeout；後端會在 5 秒內改回 `503` 與 `Database unavailable`，可在 Network tab 或 Vercel Function Logs 直接定位。
+
 MongoDB Atlas 需要允許 Vercel 連線；demo 專案可在 Atlas Network Access 加入 `0.0.0.0/0`，正式環境請改用更嚴格的網路控管。
 
 ## 錯誤處理

@@ -49,7 +49,10 @@ app.use('/api', async (req, res, next) => {
     await connectDB()
     next()
   } catch (error) {
-    next(error)
+    res.status(error.statusCode || 503).json({
+      message: 'Database unavailable',
+      detail: error.message,
+    })
   }
 })
 
