@@ -1,6 +1,7 @@
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
+import mongoose from 'mongoose'
 import authRoutes from './routes/auth.routes.js'
 import dashboardRoutes from './routes/dashboard.routes.js'
 import abnormalitiesRoutes from './routes/abnormalities.routes.js'
@@ -20,7 +21,15 @@ app.use(cookieParser())
 setupSwagger(app)
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' })
+  res.json({
+    status: 'ok',
+    env: {
+      mongodbUri: Boolean(process.env.MONGODB_URI),
+      jwtSecret: Boolean(process.env.JWT_SECRET),
+      clientOrigin: Boolean(process.env.CLIENT_ORIGIN),
+    },
+    mongoReadyState: mongoose.connection.readyState,
+  })
 })
 
 app.use('/api', async (req, res, next) => {
