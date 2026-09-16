@@ -18,16 +18,14 @@
 ## 主要目錄
 
 ```txt
-server/
-  src/
-    app.js            Express app、middleware、route 掛載
-    server.js         DB 連線與 HTTP server 啟動
-    config/           MongoDB 與 Swagger 設定
-    controllers/      API business flow
-    middlewares/      JWT 驗證、權限檢查、錯誤處理
-    models/           Mongoose models
-    routes/           Express routers
-    seed/             demo seed data
+app.js            Express app、middleware、route 掛載
+server.js         DB 連線與 HTTP server 啟動
+config/           MongoDB 與 Swagger 設定
+controllers/      API business flow
+middlewares/      JWT 驗證、權限檢查、錯誤處理
+models/           Mongoose models
+routes/           Express routers
+seed/             demo seed data
 ```
 
 ## 環境變數
