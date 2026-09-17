@@ -2,6 +2,8 @@
 
 後端是一個製造現場 MES Dashboard demo API，使用 Express、MongoDB、Mongoose、JWT 與 Zod，提供登入授權、Dashboard summary、異常單與維修單管理。前端透過 Vite proxy 將 `/api` 請求轉送到本服務。
 
+[Demo](https://manufacturing-dashboard-vue.vercel.app/dashboard)
+
 ## 技術棧
 
 - Node.js
